@@ -63,8 +63,12 @@ RUN pip install cython setuptools wheel tk psycopg2 PyGobject pycairo cython
 COPY opt/start-singleuser.sh /opt/start-singleuser-base.sh
 COPY my_init.d/start-singleuser.sh /etc/my_init.d/30_start-singleuser.sh
 
-# Install AiiDA
-RUN pip install aiida-core['rest','atomic_tools']==1.0.0
+
+# Install AiiDA and BigDFT plugin 
+# aiida from gh, as we have numpy 1.17 in intelpython. Replace by pip one after 1.0.2 release.
+RUN git clone https://github.com/aiidateam/aiida-core.git
+RUN pip install -e aiida-core['rest','atomic_tools','notebook']
+EXPOSE 8888
 
 # Add aiida user (no password)
 RUN mkdir /home/aiida                                             && \
@@ -94,6 +98,8 @@ ENV PATH /opt/conda/bin:$PATH
 RUN mkdir --mode=0700 $HOME/.ssh/ && \
     touch $HOME/.ssh/known_hosts
 
+
+RUN mkdir -p $HOME/.ipython/profile_default/startup && cp aiida-core/aiida/tools/ipython/aiida_magic_register.py /home/aiida/.ipython/profile_default/startup/aiida_magic_register.py
 # Important to end as user root!
 USER root
 
