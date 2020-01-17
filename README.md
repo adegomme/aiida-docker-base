@@ -2,6 +2,8 @@
 This repository contains the Docker file that installs [AiiDA](http://www.aiida.net)
 and its Python dependencies.
 
+This fork installs intelpython3 to benefit from optimized numpy and scipy, as well as a jupyter server. 
+
 ## Updating the image
 In order to update the AiiDA version, go to Docker file and change the following line:
 ```
